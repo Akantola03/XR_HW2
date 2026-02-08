@@ -13,6 +13,9 @@ public class CustomGrab : MonoBehaviour
     public InputActionReference action;
     bool grabbing = false;
 
+    Vector3 lastPosition;
+    Quaternion lastRotation;
+
     private void Start()
     {
         action.action.Enable();
@@ -23,6 +26,9 @@ public class CustomGrab : MonoBehaviour
             if (c != this)
                 otherHand = c;
         }
+
+        lastPosition = transform.position;
+        lastRotation = transform.rotation;
     }
 
     void Update()
@@ -31,15 +37,27 @@ public class CustomGrab : MonoBehaviour
         if (grabbing)
         {
             // Grab nearby object or the object in the other hand
-            if (!grabbedObject)
-                grabbedObject = nearObjects.Count > 0 ? nearObjects[0] : otherHand.grabbedObject;
-
+            if (!grabbedObject) {
+                // Prefer objects that are near this hand
+                if (nearObjects.Count > 0) {
+                    grabbedObject = nearObjects[0];
+                } 
+                else if (otherHand && otherHand.grabbedObject) {
+                    //take from other hand
+                    grabbedObject = otherHand.grabbedObject;
+                    otherHand.grabbedObject = null;
+                }
+            }
+            // Move gtabbed object using delta motion
             if (grabbedObject)
             {
                 // Change these to add the delta position and rotation instead
                 // Save the position and rotation at the end of Update function, so you can compare previous pos/rot to current here
-                grabbedObject.position = transform.position;
-                grabbedObject.rotation = transform.rotation;
+                Vector3 deltaPosition = transform.position - lastPosition;
+                Quaternion deltaRotation = transform.rotation * Quaternion.Inverse(lastRotation);
+                
+                grabbedObject.position += deltaPosition;
+                grabbedObject.rotation = deltaRotation * grabbedObject.rotation;
             }
         }
         // If let go of button, release object
@@ -47,6 +65,8 @@ public class CustomGrab : MonoBehaviour
             grabbedObject = null;
 
         // Should save the current position and rotation here
+        lastPosition = transform.position;
+        lastRotation = transform.rotation;
     }
 
     private void OnTriggerEnter(Collider other)
