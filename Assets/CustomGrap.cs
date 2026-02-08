@@ -37,12 +37,15 @@ public class CustomGrab : MonoBehaviour
         if (grabbing)
         {
             // Grab nearby object or the object in the other hand
-            if (!grabbedObject) {
+            if (!grabbedObject)
+            {
                 // Prefer objects that are near this hand
-                if (nearObjects.Count > 0) {
+                if (nearObjects.Count > 0)
+                {
                     grabbedObject = nearObjects[0];
-                } 
-                else if (otherHand && otherHand.grabbedObject) {
+                }
+                else if (otherHand && otherHand.grabbedObject)
+                {
                     //take from other hand
                     grabbedObject = otherHand.grabbedObject;
                     otherHand.grabbedObject = null;
@@ -55,7 +58,7 @@ public class CustomGrab : MonoBehaviour
                 // Save the position and rotation at the end of Update function, so you can compare previous pos/rot to current here
                 Vector3 deltaPosition = transform.position - lastPosition;
                 Quaternion deltaRotation = transform.rotation * Quaternion.Inverse(lastRotation);
-                
+
                 grabbedObject.position += deltaPosition;
                 grabbedObject.rotation = deltaRotation * grabbedObject.rotation;
             }
