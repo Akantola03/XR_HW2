@@ -14,14 +14,11 @@ public class LensVector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Vector3 direction = glass.position - mainCamera.position;
-        //lensCamera.rotation = Quaternion.LookRotation(direction);
-
-        /*
-        // Put the lens camera at the glass position
-        lensCamera.position = glass.position; 
-        // Make the lens camera look in the same direction as the main camera
+        // Position the lens camera at the glass 
+        lensCamera.position = glass.position - mainCamera.forward * cameraOffset; 
+        // Cancel out parent rotation so the lensCamera doesn't inherit the lens rotation
+        //lensCamera.localRotation = Quaternion.identity; 
+        // Apply main camera orientation 
         lensCamera.rotation = Quaternion.LookRotation(mainCamera.forward, mainCamera.up);
-        */    
        }
 }
