@@ -1,11 +1,13 @@
 using UnityEditor.XR.LegacyInputHelpers;
 using UnityEngine;
+using UnityEngine.LightTransport;
 
 public class LensCamVector : MonoBehaviour
 {
-    public Transform mainCamera;
+    public Transform mainCameraPos;
     public Transform lensCamera;
-    public Transform glass;
+    public Transform glassPos;
+    public Transform glassRot;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -15,15 +17,12 @@ public class LensCamVector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Position the lens camera at the glass 
-        //lensCamera.position = glass.position - mainCamera.forward;
-        // Cancel out parent rotation so the lensCamera doesn't inherit the lens rotation
-        //lensCamera.localRotation = Quaternion.identity; 
-        // Apply main camera orientation 
-        //lensCamera.rotation = Quaternion.LookRotation(mainCamera.forward, mainCamera.up);
-        
-        Vector3 direction = glass.position - mainCamera.position;
-        lensCamera.localRotation = Quaternion.identity;
-        lensCamera.rotation = Quaternion.LookRotation(direction, Vector3.up);
+
+        // The vector between the player and magnifying glass
+        Vector3 direction = glassPos.position - mainCameraPos.position;
+
+        // How lensCamera should be rotated
+        lensCamera.rotation = Quaternion.LookRotation(direction, glassRot.up);
+
     }
 }
